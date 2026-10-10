@@ -1,0 +1,4 @@
+# Ignore all static files except docs.html
+*
+!docs.html
+!.gitignore

@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>web-dlp API Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6c757d;
+            --accent: #0066ff;
+            --accent-hover: #0052cc;
+            --border: #dee2e6;
+            --code-bg: #f5f7fa;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #7d8590;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --border: #30363d;
+            --code-bg: #161b22;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .github-link {
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .github-link:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - 70px);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent);
+        }
+
+        .nav-item.active {
+            background: var(--accent);
+            color: white;
+            border-left: 3px solid var(--accent-hover);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: 70px;
+            padding: 3rem;
+            max-width: 1200px;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.15);
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Code Block */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .code-header {
+            background: var(--bg-tertiary);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-language {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .copy-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .copy-button:hover {
+            background: var(--accent-hover);
+        }
+
+        .copy-button.copied {
+            background: var(--success);
+        }
+
+        .code-content {
+    background: var(--code-bg) !important;
+    padding: 1.5rem !important;
+    overflow-x: auto;
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+
+.code-content code {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    color: inherit !important;
+}
+
+        /* Endpoint Cards */
+        .endpoint-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .endpoint-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .endpoint-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .http-method {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .method-get {
+            background: #28a745;
+            color: white;
+        }
+
+        .method-post {
+            background: #0066ff;
+            color: white;
+        }
+
+        .method-put {
+            background: #ffc107;
+            color: #1a1a1a;
+        }
+
+        .method-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .endpoint-path {
+            font-family: 'Monaco', monospace;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .endpoint-body {
+            padding: 0 1.5rem 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .endpoint-description {
+            color: var(--text-secondary);
+            margin: 1rem 0;
+            line-height: 1.6;
+        }
+
+        /* Parameters Table */
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .params-table th {
+            background: var(--bg-tertiary);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .params-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .param-name {
+            font-family: 'Monaco', monospace;
+            color: var(--accent);
+        }
+
+        .param-type {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-required {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge-optional {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        /* Response Preview */
+        .response-preview {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Quick Start Steps */
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-download"></i>
+            <span>web-dlp API</span>
+            <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 400;">v1.0.0</span>
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+                <span>Dark Mode</span>
+            </button>
+            <a href="https://github.com/Solez-ai/web-dlp-api" target="_blank" class="github-link">
+                <i class="fab fa-github"></i>
+                <span>GitHub</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="nav-section">
+            <div class="nav-title">Getting Started</div>
+            <a class="nav-item active" href="#overview">
+                <i class="fas fa-home"></i>
+                <span>Overview</span>
+            </a>
+            <a class="nav-item" href="#quick-start">
+                <i class="fas fa-rocket"></i>
+                <span>Quick Start</span>
+            </a>
+            <a class="nav-item" href="#authentication">
+                <i class="fas fa-key"></i>
+                <span>Authentication</span>
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-title">API Reference</div>
+            <a class="nav-item" href="#health-check">
+                <i class="fas fa-heartbeat"></i>
+                <span>Health Check</span>
+            </a>
+            <a class="nav-item" href="#create-job">
+                <i class="fas fa-plus-circle"></i>
+                <span>Create Job</span>
+            </a>
+            <a class="nav-item" href="#check-status">
+                <i class="fas fa-tasks"></i>
+                <span>Check Status</span>
+            </a>
+            <a class="nav-item" href="#download-file">
+                <i class="fas fa-file-download"></i>
+                <span>Download File</span>
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-title">Resources</div>
+            <a class="nav-item" href="#examples">
+                <i class="fas fa-code"></i>
+                <span>Code Examples</span>
+            </a>
+            <a class="nav-item" href="#rate-limits">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Rate Limits</span>
+            </a>
+            <a class="nav-item" href="#errors">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Error Handling</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <h1 class="section-title">
+                <i class="fas fa-download"></i>
+                web-dlp API Documentation
+            </h1>
+            <p class="section-description">
+                A powerful, queue-based REST API for downloading YouTube videos and extracting audio. Built with FastAPI
+                and powered by yt-dlp, this API provides reliable, non-blocking video processing with automatic cleanup
+                and rate limiting.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="feature-title">Audio Extraction</div>
+                    <div class="feature-description">Extract high-quality MP3 audio (192K) from any YouTube video.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="feature-title">Video Download</div>
+                    <div class="feature-description">Download videos up to 720p with optimal quality settings.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="feature-title">Queue System</div>
+                    <div class="feature-description">Non-blocking background processing for multiple concurrent
+                        requests.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-title">Rate Limited</div>
+                    <div class="feature-description">Built-in protection with 5 requests per IP per minute limit.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-broom"></i>
+                    </div>
+                    <div class="feature-title">Auto Cleanup</div>
+                    <div class="feature-description">Files automatically deleted after 10 minutes to save space.</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="feature-title">High Performance</div>
+                    <div class="feature-description">Optimized for Railway deployment with efficient resource usage.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Start Section -->
+        <section id="quick-start" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-rocket"></i>
+                Quick Start Guide
+            </h2>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-title">Create a Download Job</div>
+                    <div class="step-description">Send a POST request to /request with the YouTube URL and desired
+                        format.</div>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">bash</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code1')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-bash" id="code1">curl -X POST https://your-api-url.railway.app/request \
+                            -H "Content-Type: application/json" \
+                            -d '{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ","format":"mp3"}'</code></pre>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title">Check Job Status</div>
+                    <div class="step-description">Use the returned job_id to poll the status endpoint until completion.
+                    </div>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">bash</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code2')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-bash" id="code2">curl
+                            "https://your-api-url.railway.app/status?id=YOUR_JOB_ID"</code></pre>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title">Download the File</div>
+                    <div class="step-description">Once status is "finished", download your file from the result
+                        endpoint.</div>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">bash</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code3')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-bash" id="code3">curl
+                            "https://your-api-url.railway.app/result?id=YOUR_JOB_ID" --output song.mp3</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Authentication Section -->
+        <section id="authentication" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-key"></i>
+                Authentication
+            </h2>
+            <p class="section-description">
+                This API is currently <strong>open and does not require authentication</strong>. Rate limiting is
+                enforced based on IP address to prevent abuse. Each IP is limited to 5 requests per minute.
+            </p>
+        </section>
+
+        <!-- API Endpoints -->
+        <section id="api-endpoints" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-code"></i>
+                API Reference
+            </h2>
+
+            <!-- Health Check Endpoint -->
+            <div id="health-check" class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="http-method method-get">GET</span>
+                    <span class="endpoint-path">/</span>
+                </div>
+                <div class="endpoint-body">
+                    <p class="endpoint-description">
+                        Health check endpoint to verify API availability. Returns a simple status message. Use this for
+                        monitoring and keep-alive pings.
+                    </p>
+
+                    <h4>Response Example</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">json</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code4')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-json" id="code4">{
+                            "status": "YT-API running"
+                            }</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Job Endpoint -->
+            <div id="create-job" class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="http-method method-post">POST</span>
+                    <span class="endpoint-path">/request</span>
+                </div>
+                <div class="endpoint-body">
+                    <p class="endpoint-description">
+                        Creates a new download job and adds it to the processing queue. Returns a unique job ID for
+                        tracking.
+                    </p>
+
+                    <h4>Request Body</h4>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">url</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">Required</span></td>
+                                <td>YouTube video URL (youtube.com or youtu.be)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">format</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-optional">Optional</span></td>
+                                <td>Output format: "mp3" or "mp4" (default: "mp4")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Request Example</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">json</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code5')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-json" id="code5">{
+                            "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                            "format": "mp3"
+                            }</code></pre>
+                    </div>
+
+                    <h4>Response Example</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">json</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code6')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-json" id="code6">{
+                            "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                            "status": "queued"
+                            }</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Check Status Endpoint -->
+            <div id="check-status" class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="http-method method-get">GET</span>
+                    <span class="endpoint-path">/status</span>
+                </div>
+                <div class="endpoint-body">
+                    <p class="endpoint-description">
+                        Get the current status and progress of a download job. Poll this endpoint until status is
+                        "finished" or "error".
+                    </p>
+
+                    <h4>Query Parameters</h4>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">id</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">Required</span></td>
+                                <td>Job ID returned from POST /request</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Response Example</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">json</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code7')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-json" id="code7">{
+                            "status": "finished",
+                            "progress": 100,
+                            "error": null
+                            }</code></pre>
+                    </div>
+
+                    <h4>Status Values</h4>
+                    <ul style="margin-top: 1rem; color: var(--text-secondary);">
+                        <li><strong>queued</strong> - Job is waiting in queue</li>
+                        <li><strong>processing</strong> - Download in progress</li>
+                        <li><strong>finished</strong> - Download complete, file ready</li>
+                        <li><strong>error</strong> - Download failed (see error field)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Download File Endpoint -->
+            <div id="download-file" class="endpoint-card">
+                <div class="endpoint-header">
+                    <span class="http-method method-get">GET</span>
+                    <span class="endpoint-path">/result</span>
+                </div>
+                <div class="endpoint-body">
+                    <p class="endpoint-description">
+                        Download the processed file. Only works when job status is "finished". The file is streamed
+                        directly to your client.
+                    </p>
+
+                    <h4>Query Parameters</h4>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">id</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td><span class="badge badge-required">Required</span></td>
+                                <td>Job ID returned from POST /request</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Success Response</h4>
+                    <p style="color: var(--text-secondary); margin: 1rem 0;">
+                        Returns the file with appropriate Content-Type header (audio/mpeg for MP3, video/mp4 for MP4).
+                    </p>
+
+                    <h4>Error Response (Not Ready)</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-language">json</span>
+                            <button class="copy-button" onclick="copyCode(this, 'code8')">
+                                <i class="fas fa-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre class="code-content"><code class="language-json" id="code8">{
+                            "error": "not_ready",
+                            "status": "processing"
+                            }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Code Examples Section -->
+        <section id="examples" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-code"></i>
+                Code Examples
+            </h2>
+
+            <h3 style="margin: 2rem 0 1rem;">JavaScript / Node.js</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-language">javascript</span>
+                    <button class="copy-button" onclick="copyCode(this, 'code9')">
+                        <i class="fas fa-copy"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <pre class="code-content"><code class="language-javascript" id="code9">const API_URL = 'https://your-api-url.railway.app';
+
+                    // Create a download job
+                    async function downloadYouTubeAudio(url) {
+                    // Step 1: Create job
+                    const createResponse = await fetch(`${API_URL}/request`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, format: 'mp3' })
+                    });
+                    const { job_id } = await createResponse.json();
+                    console.log('Job created:', job_id);
+
+                    // Step 2: Poll for completion
+                    while (true) {
+                    const statusResponse = await fetch(`${API_URL}/status?id=${job_id}`);
+                    const { status, progress } = await statusResponse.json();
+
+                    console.log(`Status: ${status} (${progress}%)`);
+
+                    if (status === 'finished') break;
+                    if (status === 'error') throw new Error('Download failed');
+
+                    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s
+                    }
+
+                    // Step 3: Download file
+                    const fileUrl = `${API_URL}/result?id=${job_id}`;
+                    console.log('Download ready:', fileUrl);
+                    return fileUrl;
+                    }
+
+                    // Usage
+                    downloadYouTubeAudio('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+                    .then(url => console.log('Success!', url))
+                    .catch(err => console.error('Error:', err));</code></pre>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem;">Python</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-language">python</span>
+                    <button class="copy-button" onclick="copyCode(this, 'code10')">
+                        <i class="fas fa-copy"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <pre class="code-content"><code class="language-python" id="code10">import requests
+                    import time
+
+                    API_URL = 'https://your-api-url.railway.app'
+
+                    def download_youtube_video(url, format='mp3'):
+                    # Create job
+                    response = requests.post(
+                    f'{API_URL}/request',
+                    json={'url': url, 'format': format}
+                    )
+                    job_id = response.json()['job_id']
+                    print(f'Job created: {job_id}')
+
+                    # Poll for completion
+                    while True:
+                    response = requests.get(f'{API_URL}/status?id={job_id}')
+                    data = response.json()
+                    status = data['status']
+                    progress = data['progress']
+
+                    print(f'Status: {status} ({progress}%)')
+
+                    if status == 'finished':
+                    break
+                    elif status == 'error':
+                    raise Exception(f"Download failed: {data.get('error')}")
+
+                    time.sleep(2) # Wait 2 seconds
+
+                    # Download file
+                    response = requests.get(f'{API_URL}/result?id={job_id}')
+                    filename = f'{job_id}.{format}'
+
+                    with open(filename, 'wb') as f:
+                    f.write(response.content)
+
+                    print(f'Downloaded: {filename}')
+                    return filename
+
+                    # Usage
+                    download_youtube_video('https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'mp3')</code></pre>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem;">cURL</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-language">bash</span>
+                    <button class="copy-button" onclick="copyCode(this, 'code11')">
+                        <i class="fas fa-copy"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <pre class="code-content"><code class="language-bash" id="code11"># Create job and get job_id
+                    JOB_ID=$(curl -X POST https://your-api-url.railway.app/request \
+                    -H "Content-Type: application/json" \
+                    -d '{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ","format":"mp3"}' \
+                    | jq -r '.job_id')
+
+                    echo "Job ID: $JOB_ID"
+
+                    # Poll status (run until finished)
+                    while true; do
+                    STATUS=$(curl -s "https://your-api-url.railway.app/status?id=$JOB_ID" | jq -r '.status')
+                    echo "Status: $STATUS"
+                    if [ "$STATUS" = "finished" ]; then
+                    break
+                    fi
+                    sleep 2
+                    done
+
+                    # Download file
+                    curl "https://your-api-url.railway.app/result?id=$JOB_ID" --output song.mp3
+                    echo "Download complete!"</code></pre>
+            </div>
+        </section>
+
+        <!-- Rate Limits Section -->
+        <section id="rate-limits" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-tachometer-alt"></i>
+                Rate Limits
+            </h2>
+            <p class="section-description">
+                To ensure fair usage and prevent abuse, the API enforces the following limits:
+            </p>
+
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Limit Type</th>
+                        <th>Value</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Requests per IP</strong></td>
+                        <td>5 per minute</td>
+                        <td>Maximum number of job creation requests from a single IP</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Download Timeout</strong></td>
+                        <td>5 minutes</td>
+                        <td>Maximum time allowed for a single download</td>
+                    </tr>
+                    <tr>
+                        <td><strong>File Lifetime</strong></td>
+                        <td>10 minutes</td>
+                        <td>Files are auto-deleted after this period</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Max Video Quality</strong></td>
+                        <td>720p</td>
+                        <td>Videos are limited to 720p to save bandwidth</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div
+                style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-left: 4px solid var(--accent); border-radius: 8px;">
+                <strong>Note:</strong> When rate limit is exceeded, the API returns HTTP 429 (Too Many Requests).
+            </div>
+        </section>
+
+        <!-- Error Handling Section -->
+        <section id="errors" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Error Handling
+            </h2>
+
+            <table class="params-table">
+                <thead>
+                    <tr>
+                        <th>Status Code</th>
+                        <th>Error</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>400</strong></td>
+                        <td>Invalid YouTube URL</td>
+                        <td>The provided URL is not a valid YouTube link</td>
+                    </tr>
+                    <tr>
+                        <td><strong>400</strong></td>
+                        <td>Invalid format</td>
+                        <td>Format must be "mp3" or "mp4"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>404</strong></td>
+                        <td>Job not found</td>
+                        <td>The job ID doesn't exist or has expired</td>
+                    </tr>
+                    <tr>
+                        <td><strong>429</strong></td>
+                        <td>Rate limit exceeded</td>
+                        <td>Too many requests from your IP (max 5/minute)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>500</strong></td>
+                        <td>Internal server error</td>
+                        <td>Something went wrong on the server</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin: 2rem 0 1rem;">Error Response Format</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-language">json</span>
+                    <button class="copy-button" onclick="copyCode(this, 'code12')">
+                        <i class="fas fa-copy"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <pre class="code-content"><code class="language-json" id="code12">{
+                    "detail": "Invalid YouTube URL. Only YouTube URLs are supported."
+                    }</code></pre>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+
+            const button = document.querySelector('.theme-toggle');
+            if (newTheme === 'dark') {
+                button.innerHTML = '<i class="fas fa-sun"></i><span>Light Mode</span>';
+            } else {
+                button.innerHTML = '<i class="fas fa-moon"></i><span>Dark Mode</span>';
+            }
+
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            if (savedTheme === 'dark') {
+                const button = document.querySelector('.theme-toggle');
+                button.innerHTML = '<i class="fas fa-sun"></i><span>Light Mode</span>';
+            }
+        });
+
+        // Copy Code Function
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+const code = codeElement.innerText || codeElement.textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalHTML = button.innerHTML;
+                button.classList.add('copied');
+                button.innerHTML = '<i class="fas fa-check"></i><span>Copied!</span>';
+
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+
+        // Smooth Scrolling for Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = item.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Update active state
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight active section on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+</body>
+</html>
